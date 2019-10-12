@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sztxr/FullStackOpen2019-Phonebook-Backend.git"
+    "url": "git+https://github.com/sztxr/FullStackOpen2019_Phonebook-Backend.git"
   },
   "author": "Eszter",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sztxr/FullStackOpen2019-Phonebook-Backend/issues"
+    "url": "https://github.com/sztxr/FullStackOpen2019_Phonebook-Backend/issues"
   },
-  "homepage": "https://github.com/sztxr/FullStackOpen2019-Phonebook-Backend#readme",
+  "homepage": "https://github.com/sztxr/FullStackOpen2019_Phonebook-Backend#readme",
   "dependencies": {
     "express": "^4.17.1"
   },
