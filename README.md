@@ -2,4 +2,9 @@
 ## &mdash; Backend Exercise
 **Backend code** for the *Phonebook App*
 
-by Eszter
+Deployed to Heroku:
+* Link to [**App Frontend**](https://cryptic-temple-50231.herokuapp.com/)
+* Link to [**App Backend**](https://cryptic-temple-50231.herokuapp.com/api/contacts)
+
+
+*by Eszter*
