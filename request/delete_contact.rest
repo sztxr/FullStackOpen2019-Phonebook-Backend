@@ -1,1 +1,1 @@
-DELETE http://localhost:3001/api/contacts/2
+DELETE https://cryptic-temple-50231.herokuapp.com/api/contacts/2

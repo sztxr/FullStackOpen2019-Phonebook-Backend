@@ -1,4 +1,4 @@
-POST http://localhost:3001/api/contacts/
+POST https://cryptic-temple-50231.herokuapp.com/api/contacts
 Content-Type: application/json
 
 {
