@@ -7,6 +7,9 @@ app.use(bodyParser.json())
 
 // MIDDLEWARE
 
+const cors = require('cors')
+app.use(cors())
+
 morgan.token('body', req => JSON.stringify(req.body))
 app.use(
   morgan(
@@ -14,8 +17,7 @@ app.use(
   )
 )
 
-const cors = require('cors')
-app.use(cors())
+app.use(express.static('build'))
 
 let contacts = [
   {
