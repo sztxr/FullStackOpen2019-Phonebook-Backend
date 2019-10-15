@@ -74,7 +74,7 @@ app.get('/api/contacts/:id', (req, res) => {
 // DELETE
 
 app.delete('/api/contacts/:id', (req, res) => {
-  const id = Number(req.params.id)
+  const id = req.params.id
   contacts = contacts.filter(entry => entry.id !== id)
   res.status(204).end()
 })
