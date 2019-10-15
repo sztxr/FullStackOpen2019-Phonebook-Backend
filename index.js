@@ -62,8 +62,8 @@ app.get('/api/contacts', (req, res) => {
 })
 
 app.get('/api/contacts/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const contact = contacts.find(entry => entry.id === id)
+  const id = req.params.id
+  const contact = contacts.find(entry => entry.id == id)
   if (contact) {
     res.json(contact)
   } else {
