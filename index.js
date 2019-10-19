@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const Contact = require('./models/contact')
 
 app.use(bodyParser.json())
 
@@ -58,17 +60,15 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/contacts', (req, res) => {
-  res.json(contacts)
+  Contact.find({}).then(contacts => {
+    res.json(contacts)
+  })
 })
 
 app.get('/api/contacts/:id', (req, res) => {
-  const id = req.params.id
-  const contact = contacts.find(entry => entry.id == id)
-  if (contact) {
-    res.json(contact)
-  } else {
-    res.status(404).end()
-  }
+  Contact.findById(req.params.id).then(contact => {
+    res.json(contact.toJSON())
+  })
 })
 
 // DELETE
@@ -81,13 +81,9 @@ app.delete('/api/contacts/:id', (req, res) => {
 
 // POST
 
-const generateId = () => {
-  return '_' + Math.random().toString(36).substr(2, 9);
-}
-
 app.post('/api/contacts', (req, res) => {
   const { name, phone } = req.body
-  const names = contacts.map(entry => entry.name)
+  // const names = contacts.map(entry => entry.name)
 
   if (!name) {
     return res.status(404).json({
@@ -101,23 +97,23 @@ app.post('/api/contacts', (req, res) => {
     })
   }
 
-  if (names.includes(name)) {
-    return res.status(409).json({
-      error: 'contact already exist'
-    })
-  }
+  // if (names.includes(name)) {
+  //   return res.status(409).json({
+  //     error: 'contact already exist'
+  //   })
+  // }
 
-  const entry = {
+  const contact = new Contact({
     name: name,
     phone: phone,
-    id: generateId(),
-  }
+  })
 
-  contacts = contacts.concat(entry)
-  res.json(entry)
+  contact.save().then(savedContact => {
+    res.json(savedContact.toJSON())
+  })
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

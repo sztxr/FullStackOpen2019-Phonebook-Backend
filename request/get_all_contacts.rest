@@ -1,1 +1,1 @@
-GET https://cryptic-temple-50231.herokuapp.com/api/contacts
+GET http://localhost:3001/api/contacts
