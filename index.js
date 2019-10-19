@@ -51,12 +51,12 @@ app.get('/', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-  const entries = contacts.length
   const date = new Date()
-  res.send(`
-  <p>Phonebook has a total of ${entries} entries</p>
-  <p>${date}</p>
-  `)
+  Contact.countDocuments().then(result =>
+    res.send(`
+      <p>Phonebook has a total of ${result} entries</p>
+      <p>${date}</p>
+    `))
 })
 
 app.get('/api/contacts', (req, res) => {
@@ -65,18 +65,56 @@ app.get('/api/contacts', (req, res) => {
   })
 })
 
-app.get('/api/contacts/:id', (req, res) => {
-  Contact.findById(req.params.id).then(contact => {
-    res.json(contact.toJSON())
-  })
+app.get('/api/contacts/:id', (req, res, next) => {
+  Contact.findById(req.params.id)
+    .then(contact => {
+      if (contact) {
+        res.json(contact.toJSON())
+      }
+      else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => next(error))
+})
+
+// PUT
+
+app.put('/api/contacts/:id', (req, res, next) => {
+  const { name, phone } = req.body
+
+  if (!name) {
+    return res.status(404).json({
+      error: 'name is missing'
+    })
+  }
+
+  if (!phone) {
+    return res.status(404).json({
+      error: 'phone number is missing'
+    })
+  }
+
+  const contact = {
+    name: name,
+    phone: phone,
+  }
+
+  Contact.findByIdAndUpdate(req.params.id, contact, { new: true })
+    .then(updatedContact => {
+      res.json(updatedContact.toJSON())
+    })
+    .catch(error => next(error))
 })
 
 // DELETE
 
-app.delete('/api/contacts/:id', (req, res) => {
-  const id = req.params.id
-  contacts = contacts.filter(entry => entry.id != id)
-  res.status(204).end()
+app.delete('/api/contacts/:id', (req, res, next) => {
+  Contact.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 // POST
@@ -113,6 +151,17 @@ app.post('/api/contacts', (req, res) => {
   })
 })
 
+// MIDDLEWARE to handle errors
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return res.status(400).send({ error: 'malformed id' })
+  }
+  next(error)
+}
+app.use(errorHandler)
+
+// PORT
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)

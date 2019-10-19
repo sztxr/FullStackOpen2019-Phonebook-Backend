@@ -1,1 +1,1 @@
-DELETE https://cryptic-temple-50231.herokuapp.com/api/contacts/2
+DELETE http://localhost:3001/api/contacts/5dab68c9cb09f62c54458784
