@@ -72,7 +72,7 @@ app.get('/api/contacts/:id', (req, res, next) => {
         res.json(contact.toJSON())
       }
       else {
-        res.status(404).end()
+        res.status(204).end()
       }
     })
     .catch(error => next(error))
@@ -82,18 +82,6 @@ app.get('/api/contacts/:id', (req, res, next) => {
 
 app.put('/api/contacts/:id', (req, res, next) => {
   const { name, phone } = req.body
-
-  if (!name) {
-    return res.status(404).json({
-      error: 'name is missing'
-    })
-  }
-
-  if (!phone) {
-    return res.status(404).json({
-      error: 'phone number is missing'
-    })
-  }
 
   const contact = {
     name: name,
@@ -119,21 +107,9 @@ app.delete('/api/contacts/:id', (req, res, next) => {
 
 // POST
 
-app.post('/api/contacts', (req, res) => {
+app.post('/api/contacts', (req, res, next) => {
   const { name, phone } = req.body
   // const names = contacts.map(entry => entry.name)
-
-  if (!name) {
-    return res.status(404).json({
-      error: 'name is missing'
-    })
-  }
-
-  if (!phone) {
-    return res.status(404).json({
-      error: 'phone number is missing'
-    })
-  }
 
   // if (names.includes(name)) {
   //   return res.status(409).json({
@@ -146,17 +122,25 @@ app.post('/api/contacts', (req, res) => {
     phone: phone,
   })
 
-  contact.save().then(savedContact => {
-    res.json(savedContact.toJSON())
-  })
+  contact
+    .save()
+    .then(savedContact => savedContact.toJSON())
+    .then(savedAndFormattedContact => {
+      res.json(savedAndFormattedContact)
+    })
+    .catch(error => next(error))
 })
 
 // MIDDLEWARE to handle errors
 const errorHandler = (error, req, res, next) => {
   console.error(error.message)
+
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return res.status(400).send({ error: 'malformed id' })
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message })
   }
+
   next(error)
 }
 app.use(errorHandler)
