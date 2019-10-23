@@ -23,24 +23,24 @@ app.use(express.static('build'))
 
 let contacts = [
   {
-    "name": "Arto Hellas",
-    "phone": "040-123456",
-    "id": 1
+    'name': 'Arto Hellas',
+    'phone': '040-123456',
+    'id': 1
   },
   {
-    "name": "Ada Lovelace",
-    "phone": "39-44-5323523",
-    "id": 2
+    'name': 'Ada Lovelace',
+    'phone': '39-44-5323523',
+    'id': 2
   },
   {
-    "name": "Dan Abramov",
-    "phone": "12-43-234345",
-    "id": 3
+    'name': 'Dan Abramov',
+    'phone': '12-43-234345',
+    'id': 3
   },
   {
-    "name": "Mary Poppendieck",
-    "phone": "39-23-6423122",
-    "id": 4
+    'name': 'Mary Poppendieck',
+    'phone': '39-23-6423122',
+    'id': 4
   }
 ]
 
@@ -61,7 +61,7 @@ app.get('/info', (req, res) => {
 
 app.get('/api/contacts', (req, res) => {
   Contact.find({}).then(contacts => {
-    res.json(contacts)
+    res.json(contacts.map(contact => contact.toJSON()))
   })
 })
 
@@ -99,7 +99,7 @@ app.put('/api/contacts/:id', (req, res, next) => {
 
 app.delete('/api/contacts/:id', (req, res, next) => {
   Contact.findByIdAndRemove(req.params.id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => next(error))
@@ -109,13 +109,6 @@ app.delete('/api/contacts/:id', (req, res, next) => {
 
 app.post('/api/contacts', (req, res, next) => {
   const { name, phone } = req.body
-  // const names = contacts.map(entry => entry.name)
-
-  // if (names.includes(name)) {
-  //   return res.status(409).json({
-  //     error: 'contact already exist'
-  //   })
-  // }
 
   const contact = new Contact({
     name: name,
